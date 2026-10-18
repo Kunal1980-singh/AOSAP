@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Attendance & Academic Performance Analysis</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="bg-indigo-600 text-white p-2.5 rounded-lg shadow">
+          <i class="fa-solid me-0 fa-chart-line text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">EduAnalytics</h1>
+          <p class="text-xs text-slate-400">Attendance vs. Performance Portal</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex bg-slate-800 p-1 rounded-lg text-sm font-medium">
+        <button id="tab-btn-dashboard" onclick="switchTab('dashboard')" class="px-4 py-2 rounded-md bg-indigo-600 text-white shadow transition-all">
+          <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard
+        </button>
+        <button id="tab-btn-calculator" onclick="switchTab('calculator')" class="px-4 py-2 rounded-md text-slate-300 hover:text-white transition-all">
+          <i class="fa-solid fa-calculator mr-2"></i>Predictor
+        </button>
+        <button id="tab-btn-guide" onclick="switchTab('guide')" class="px-4 py-2 rounded-md text-slate-300 hover:text-white transition-all">
+          <i class="fa-solid fa-rocket mr-2"></i>Publishing Guide
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="tab-dashboard" class="space-y-8">
+      
+      <!-- Top Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Students</p>
+            <h3 class="text-2xl font-bold text-slate-800 mt-1">1,250</h3>
+            <span class="text-xs font-medium text-emerald-600 mt-1 inline-block"><i class="fa-solid fa-arrow-up mr-1"></i>+4% this term</span>
+          </div>
+          <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg. Attendance</p>
+            <h3 class="text-2xl font-bold text-slate-800 mt-1">81.4%</h3>
+            <span class="text-xs font-medium text-slate-500 mt-1 inline-block">Target: 85%</span>
+          </div>
+          <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg. Academic Score</p>
+            <h3 class="text-2xl font-bold text-slate-800 mt-1">3.18 GPA</h3>
+            <span class="text-xs font-medium text-emerald-600 mt-1 inline-block"><i class="fa-solid fa-arrow-up mr-1"></i>0.12 vs last term</span>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-xl">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Correlation (r)</p>
+            <h3 class="text-2xl font-bold text-indigo-600 mt-1">+0.78</h3>
+            <span class="text-xs font-medium text-indigo-600 mt-1 inline-block">Strong Positive Link</span>
+          </div>
+          <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-xl">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Visualizations Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Scatter Plot (2 cols) -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">Attendance Rate vs. Student GPA</h2>
+              <p class="text-xs text-slate-500">Distribution of individual student attendance records against academic GPA</p>
+            </div>
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full">Chart.js Scatter</span>
+          </div>
+          <div class="h-80 relative">
+            <canvas id="scatterChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Tier Analysis Bar Chart (1 col) -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div class="mb-4">
+            <h2 class="text-lg font-bold text-slate-800">GPA by Attendance Tier</h2>
+            <p class="text-xs text-slate-500">Impact of attendance brackets on performance</p>
+          </div>
+          <div class="h-80 relative">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Chart Section -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-800">Semester Attendance & Test Performance Trends</h2>
+          <p class="text-xs text-slate-500">Weekly tracking over 16 academic weeks highlighting mid-term drop-offs</p>
+        </div>
+        <div class="h-72 relative">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">Student Performance Records</h2>
+            <p class="text-xs text-slate-500">Searchable list of student records</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search student name or dept..." class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64">
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                <th class="py-3 px-4 font-semibold">Student Name</th>
+                <th class="py-3 px-4 font-semibold">Department</th>
+                <th class="py-3 px-4 font-semibold">Attendance</th>
+                <th class="py-3 px-4 font-semibold">GPA</th>
+                <th class="py-3 px-4 font-semibold">Risk Status</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PREDICTOR CALCULATOR -->
+    <section id="tab-calculator" class="hidden space-y-8 max-w-4xl mx-auto">
+      <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+          <h2 class="text-2xl font-bold text-slate-800">Academic Outcome Predictor</h2>
+          <p class="text-slate-500 text-sm mt-1">Adjust parameters below to predict anticipated student GPA and risk levels based on statistical linear modeling.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Controls -->
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between mb-2">
+                <label class="text-sm font-semibold text-slate-700">Attendance Rate (%)</label>
+                <span id="attendanceVal" class="text-sm font-bold text-indigo-600">80%</span>
+              </div>
+              <input type="range" id="attendanceInput" min="40" max="100" value="80" oninput="updatePredictor()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <label class="text-sm font-semibold text-slate-700">Weekly Study Hours</label>
+                <span id="studyVal" class="text-sm font-bold text-indigo-600">10 hrs</span>
+              </div>
+              <input type="range" id="studyInput" min="0" max="30" value="10" oninput="updatePredictor()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <label class="text-sm font-semibold text-slate-700">Internal Score (out of 100)</label>
+                <span id="internalVal" class="text-sm font-bold text-indigo-600">75</span>
+              </div>
+              <input type="range" id="internalInput" min="30" max="100" value="75" oninput="updatePredictor()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+            </div>
+          </div>
+
+          <!-- Output Box -->
+          <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col justify-between text-center">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Predicted Result</span>
+              <div class="text-5xl font-black text-indigo-600 my-4" id="predictedGPA">3.22</div>
+              <p class="text-xs text-slate-500 mb-4">Estimated Target GPA (scale 0.0 - 4.0)</p>
+            </div>
+
+            <div id="riskBadge" class="py-3 px-4 rounded-lg bg-emerald-100 text-emerald-800 font-semibold text-sm">
+              <i class="fa-solid fa-circle-check mr-2"></i>Low Academic Risk
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PUBLISHING GUIDE -->
+    <section id="tab-guide" class="hidden space-y-8 max-w-4xl mx-auto">
+      <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">How to Deploy & Publish This Website</h2>
+        <p class="text-slate-500 text-sm mb-6">Follow these simple step-by-step instructions to take this page live on the internet for free.</p>
+
+        <div class="space-y-6">
+          <div class="flex items-start gap-4 p-4 rounded-lg border border-slate-100 bg-slate-50">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold flex-shrink-0">1</div>
+            <div>
+              <h3 class="font-bold text-slate-800">Save your Code in VS Code</h3>
+              <p class="text-sm text-slate-600 mt-1">Ensure this whole code block is saved inside a file named <code class="bg-slate-200 px-1.5 py-0.5 rounded text-indigo-700">index.html</code> inside your local project folder.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-4 rounded-lg border border-slate-100 bg-slate-50">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold flex-shrink-0">2</div>
+            <div>
+              <h3 class="font-bold text-slate-800">Option A: Deploy via GitHub Pages (Recommended)</h3>
+              <ul class="text-sm text-slate-600 list-disc ml-5 mt-1 space-y-1">
+                <li>Create a free account on <a href="https://github.com" target="_blank" class="text-indigo-600 underline">GitHub.com</a>.</li>
+                <li>Create a new public repository (e.g., <code class="bg-slate-200 px-1 py-0.5 rounded">student-attendance-analysis</code>).</li>
+                <li>Upload your <code class="bg-slate-200 px-1 py-0.5 rounded">index.html</code> file.</li>
+                <li>Go to <strong>Settings > Pages</strong>, select <strong>main branch</strong>, and hit <strong>Save</strong>.</li>
+                <li>Your website will be live in 1 minute at <code class="text-slate-800 font-mono">https://username.github.io/repository-name</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-4 rounded-lg border border-slate-100 bg-slate-50">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold flex-shrink-0">3</div>
+            <div>
+              <h3 class="font-bold text-slate-800">Option B: Deploy via Netlify Drop (Instant)</h3>
+              <p class="text-sm text-slate-600 mt-1">Go to <a href="https://app.netlify.com/drop" target="_blank" class="text-indigo-600 underline">app.netlify.com/drop</a>, drag and drop the folder containing your <code class="bg-slate-200 px-1 py-0.5 rounded">index.html</code> file, and get an instant live URL instantly!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript Code -->
+  <script>
+    // Tab Switcher
+    function switchTab(tab) {
+      ['dashboard', 'calculator', 'guide'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        const btn = document.getElementById('tab-btn-' + t);
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-300');
+      });
+
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tab);
+      activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow');
+      activeBtn.classList.remove('text-slate-300');
+    }
+
+    // Sample Data
+    const studentData = [
+      { name: "Aarav Sharma", dept: "Computer Science", attendance: 92, gpa: 3.85, status: "Low Risk" },
+      { name: "Priya Patel", dept: "Information Tech", attendance: 88, gpa: 3.60, status: "Low Risk" },
+      { name: "Rohan Verma", dept: "Electronics", attendance: 64, gpa: 2.40, status: "High Risk" },
+      { name: "Ananya Roy", dept: "Computer Science", attendance: 78, gpa: 3.10, status: "Moderate Risk" },
+      { name: "Kabir Singh", dept: "Mechanical", attendance: 52, gpa: 1.95, status: "High Risk" },
+      { name: "Diya Gupta", dept: "Information Tech", attendance: 95, gpa: 3.92, status: "Low Risk" },
+      { name: "Siddharth Das", dept: "Electronics", attendance: 71, gpa: 2.80, status: "Moderate Risk" },
+      { name: "Neha Reddy", dept: "Mechanical", attendance: 84, gpa: 3.45, status: "Low Risk" }
+    ];
+
+    // Populate Table
+    function renderTable(data) {
+      const tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = '';
+      data.forEach(s => {
+        let badgeClass = s.status === 'Low Risk' ? 'bg-emerald-100 text-emerald-800' :
+                         s.status === 'Moderate Risk' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800';
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-medium">${s.name}</td>
+            <td class="py-3 px-4 text-slate-500">${s.dept}</td>
+            <td class="py-3 px-4 font-semibold">${s.attendance}%</td>
+            <td class="py-3 px-4 font-bold text-indigo-600">${s.gpa.toFixed(2)}</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-full ${badgeClass}">${s.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function filterTable() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = studentData.filter(s => 
+        s.name.toLowerCase().includes(query) || s.dept.toLowerCase().includes(query)
+      );
+      renderTable(filtered);
+    }
+
+    // Predictor Logic
+    function updatePredictor() {
+      const att = parseFloat(document.getElementById('attendanceInput').value);
+      const study = parseFloat(document.getElementById('studyInput').value);
+      const internal = parseFloat(document.getElementById('internalInput').value);
+
+      document.getElementById('attendanceVal').innerText = att + '%';
+      document.getElementById('studyVal').innerText = study + ' hrs';
+      document.getElementById('internalVal').innerText = internal;
+
+      // Formula Model
+      let gpa = (att * 0.025) + (study * 0.04) + (internal * 0.012) - 0.2;
+      gpa = Math.min(4.0, Math.max(1.0, gpa));
+
+      document.getElementById('predictedGPA').innerText = gpa.toFixed(2);
+
+      const riskBadge = document.getElementById('riskBadge');
+      if (gpa >= 3.2) {
+        riskBadge.className = "py-3 px-4 rounded-lg bg-emerald-100 text-emerald-800 font-semibold text-sm";
+        riskBadge.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>Low Academic Risk`;
+      } else if (gpa >= 2.5) {
+        riskBadge.className = "py-3 px-4 rounded-lg bg-amber-100 text-amber-800 font-semibold text-sm";
+        riskBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>Moderate Risk - Needs Monitoring`;
+      } else {
+        riskBadge.className = "py-3 px-4 rounded-lg bg-rose-100 text-rose-800 font-semibold text-sm";
+        riskBadge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i>High Risk - Intervention Required`;
+      }
+    }
+
+    // Chart.js Initialization
+    window.onload = function() {
+      renderTable(studentData);
+
+      // Scatter Chart
+      const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+      new Chart(scatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Students',
+            data: [
+              { x: 52, y: 1.95 }, { x: 64, y: 2.40 }, { x: 71, y: 2.80 },
+              { x: 78, y: 3.10 }, { x: 84, y: 3.45 }, { x: 88, y: 3.60 },
+              { x: 92, y: 3.85 }, { x: 95, y: 3.92 }, { x: 58, y: 2.10 },
+              { x: 81, y: 3.20 }, { x: 89, y: 3.70 }, { x: 67, y: 2.55 }
+            ],
+            backgroundColor: '#4f46e5'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { title: { display: true, text: 'Attendance Rate (%)' }, min: 40, max: 100 },
+            y: { title: { display: true, text: 'GPA' }, min: 1.0, max: 4.0 }
+          }
+        }
+      });
+
+      // Bar Chart
+      const barCtx = document.getElementById('barChart').getContext('2d');
+      new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: ['< 60%', '60 - 74%', '75 - 84%', '85 - 100%'],
+          datasets: [{
+            label: 'Avg GPA',
+            data: [2.02, 2.58, 3.25, 3.78],
+            backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 0, max: 4 } }
+        }
+      });
+
+      // Line Chart
+      const lineCtx = document.getElementById('lineChart').getContext('2d');
+      new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: ['Wk 1', 'Wk 3', 'Wk 5', 'Wk 7', 'Wk 9', 'Wk 11', 'Wk 13', 'Wk 15'],
+          datasets: [
+            {
+              label: 'Avg Attendance %',
+              data: [94, 91, 88, 76, 79, 85, 83, 80],
+              borderColor: '#4f46e5',
+              tension: 0.3
+            },
+            {
+              label: 'Avg Test Marks %',
+              data: [85, 84, 82, 70, 74, 80, 81, 78],
+              borderColor: '#10b981',
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { min: 50, max: 100 } }
+        }
+      });
+    };
+  </script>
+</body>
+</html>

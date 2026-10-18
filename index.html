@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Attendance Patterns & Academic Performance AI Analysis</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN for utility classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Design System Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Main Navigation Header -->
+  <header>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
+          <i class="fa-solid fa-graduation-cap text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold tracking-tight text-white">EduPredict AI</h1>
+            <span class="badge badge-pill text-[10px] py-0.5 px-2">v2.4 Production</span>
+          </div>
+          <p class="text-xs text-gray-400">Analysis of Student Attendance Patterns & Academic Performance</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex flex-wrap items-center gap-1.5 bg-gray-900/80 p-1.5 rounded-xl border border-white/10">
+        <button id="btn-dashboard" onclick="switchTab('dashboard')" class="nav-tab-btn active">
+          <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+        </button>
+        <button id="btn-predictor" onclick="switchTab('predictor')" class="nav-tab-btn">
+          <i class="fa-solid fa-brain"></i><span>AI Predictor</span>
+        </button>
+        <button id="btn-patterns" onclick="switchTab('patterns')" class="nav-tab-btn">
+          <i class="fa-solid fa-wave-square"></i><span>Patterns & Trends</span>
+        </button>
+        <button id="btn-roster" onclick="switchTab('roster')" class="nav-tab-btn">
+          <i class="fa-solid fa-users-viewfinder"></i><span>Student Roster</span>
+        </button>
+        <button id="btn-methodology" onclick="switchTab('methodology')" class="nav-tab-btn">
+          <i class="fa-solid fa-book-bookmark"></i><span>Research Report</span>
+        </button>
+      </nav>
+
+      <!-- Dataset Download Button -->
+      <div class="hidden lg:flex items-center">
+        <button onclick="downloadDataset()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs text-gray-200 border border-white/10 transition-all">
+          <i class="fa-solid fa-download text-indigo-400"></i> Export CSV
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-7 space-y-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <!-- ========================================== -->
+    <section id="tab-dashboard" class="space-y-6">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-card flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-indigo-950/40 via-gray-900/60 to-cyan-950/30 border-indigo-500/20">
+        <div>
+          <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+            <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Longitudinal Study & Predictive Modeling
+          </span>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Empirical Attendance Impact on Academic Performance</h2>
+          <p class="text-sm text-gray-400 max-w-3xl mt-1">
+            Analysis of 2,000 university students across 16 academic weeks reveals a robust statistical correlation (<span class="text-indigo-300 font-semibold">r = +0.95</span>) between attendance patterns and student GPA, with a critical failure cliff occurring below the 75% attendance threshold.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="switchTab('predictor')" class="px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all">
+            <i class="fa-solid fa-play"></i> Launch Predictor
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Metric 1 -->
+        <div class="glass-card stat-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Cohort Size</p>
+            <h3 id="kpi-total-students" class="text-2xl font-bold text-white mt-1">2,000</h3>
+            <span class="text-xs text-emerald-400 font-medium inline-block mt-0.5"><i class="fa-solid fa-check mr-1"></i>Active Cohort</span>
+          </div>
+          <div class="stat-icon bg-indigo-500/15 text-indigo-400">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+
+        <!-- Metric 2 -->
+        <div class="glass-card stat-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Avg. Attendance</p>
+            <h3 id="kpi-avg-attendance" class="text-2xl font-bold text-white mt-1">81.4%</h3>
+            <span class="text-xs text-gray-400 font-medium inline-block mt-0.5">Target: 85.0%</span>
+          </div>
+          <div class="stat-icon bg-cyan-500/15 text-cyan-400">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+        </div>
+
+        <!-- Metric 3 -->
+        <div class="glass-card stat-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Cohort Avg. GPA</p>
+            <h3 id="kpi-avg-gpa" class="text-2xl font-bold text-white mt-1">3.19</h3>
+            <span class="text-xs text-emerald-400 font-medium inline-block mt-0.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>+0.14 YoY</span>
+          </div>
+          <div class="stat-icon bg-emerald-500/15 text-emerald-400">
+            <i class="fa-solid fa-award"></i>
+          </div>
+        </div>
+
+        <!-- Metric 4 -->
+        <div class="glass-card stat-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Pearson Corr (r)</p>
+            <h3 id="kpi-corr" class="text-2xl font-bold text-indigo-400 mt-1">+0.95</h3>
+            <span class="text-xs text-indigo-300 font-medium inline-block mt-0.5">Strong Direct Link</span>
+          </div>
+          <div class="stat-icon bg-purple-500/15 text-purple-400">
+            <i class="fa-solid fa-link"></i>
+          </div>
+        </div>
+
+        <!-- Metric 5 -->
+        <div class="glass-card stat-card flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Critical At-Risk</p>
+            <h3 id="kpi-at-risk" class="text-2xl font-bold text-rose-400 mt-1">14.8%</h3>
+            <span class="text-xs text-rose-300 font-medium inline-block mt-0.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Attendance &lt; 65%</span>
+          </div>
+          <div class="stat-icon bg-rose-500/15 text-rose-400">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Visualizations Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Scatter Plot (2 Columns) -->
+        <div class="lg:col-span-2 glass-card">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+            <div>
+              <h3 class="text-base font-bold text-white">Attendance Rate vs. Student GPA Correlation</h3>
+              <p class="text-xs text-gray-400">Scatter distribution with polynomial regression fit demonstrating the non-linear inflection cliff</p>
+            </div>
+            <span class="badge badge-pill text-xs">R² = 0.9725</span>
+          </div>
+          <div class="h-80 relative">
+            <canvas id="scatterChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Tier Analysis Bar Chart (1 Column) -->
+        <div class="glass-card">
+          <div class="mb-4">
+            <h3 class="text-base font-bold text-white">GPA & Failure Risk by Tier</h3>
+            <p class="text-xs text-gray-400">Direct relationship across 5 attendance brackets</p>
+          </div>
+          <div class="h-80 relative">
+            <canvas id="tierBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Insights Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="glass-card border-indigo-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">1</div>
+            <h4 class="font-bold text-white text-sm">The 75% Cliff Phenomenon</h4>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            Students maintaining &ge;75% attendance average a <strong>3.35 GPA</strong> with a 0% failure rate. Dropping below 75% incurs an exponential performance drop, with &lt;65% attendance resulting in an average GPA of <strong>1.76</strong> and a 98.5% academic risk rate.
+          </p>
+        </div>
+
+        <div class="glass-card border-cyan-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">2</div>
+            <h4 class="font-bold text-white text-sm">Absence Streaks as Leading Indicator</h4>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            A consecutive absence streak exceeding <strong>4 continuous lecture days</strong> is the single earliest algorithmic predictor of course withdrawal or mid-term failure (correlation r = -0.83), preceding grade degradation by up to 3 weeks.
+          </p>
+        </div>
+
+        <div class="glass-card border-emerald-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">3</div>
+            <h4 class="font-bold text-white text-sm">Actionable Early Intervention</h4>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            Simulated targeted interventions conducted between Weeks 3 and 6 (boosting attendance by +12-15%) successfully restored <strong>81.4% of at-risk students</strong> back into good academic standing (GPA &ge; 2.50).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: AI OUTCOME PREDICTOR -->
+    <!-- ========================================== -->
+    <section id="tab-predictor" class="hidden space-y-6">
+      <div class="glass-card">
+        <div class="border-b border-white/10 pb-4 mb-6">
+          <span class="badge badge-pill text-xs mb-2">Multivariate Machine Learning Model</span>
+          <h2 class="text-2xl font-bold text-white">Interactive Academic Outcome Predictor</h2>
+          <p class="text-sm text-gray-400 mt-1">
+            Simulate how modifying attendance habits, study discipline, and internal marks directly impacts predicted collegiate GPA and academic risk classification.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Input Parameters Controls (7 Cols) -->
+          <div class="lg:col-span-7 space-y-5">
+            <!-- Attendance Rate -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="text-xs font-semibold text-gray-300 uppercase tracking-wide">Overall Attendance Rate</label>
+                <span id="val-attendance" class="text-sm font-bold text-indigo-400">80%</span>
+              </div>
+              <input type="range" id="pred-attendance" min="40" max="100" value="80">
+              <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>40% (Severe Chronic)</span>
+                <span class="text-amber-400">75% (Threshold)</span>
+                <span>100% (Perfect)</span>
+              </div>
+            </div>
+
+            <!-- Weekly Study Hours -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="text-xs font-semibold text-gray-300 uppercase tracking-wide">Weekly Self-Study Time</label>
+                <span id="val-study" class="text-sm font-bold text-indigo-400">12 hrs/wk</span>
+              </div>
+              <input type="range" id="pred-study" min="0" max="30" value="12">
+              <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>0 hrs</span>
+                <span>15 hrs (Typical)</span>
+                <span>30 hrs (Intensive)</span>
+              </div>
+            </div>
+
+            <!-- Prior GPA -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="text-xs font-semibold text-gray-300 uppercase tracking-wide">Prior Cumulative GPA</label>
+                <span id="val-prior-gpa" class="text-sm font-bold text-indigo-400">3.20 GPA</span>
+              </div>
+              <input type="range" id="pred-prior-gpa" min="1.50" max="4.00" step="0.05" value="3.20">
+              <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>1.50 (Probation)</span>
+                <span>3.00 (Good)</span>
+                <span>4.00 (Perfect)</span>
+              </div>
+            </div>
+
+            <!-- Midterm Score -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="text-xs font-semibold text-gray-300 uppercase tracking-wide">Midterm / Internal Assessment</label>
+                <span id="val-midterm" class="text-sm font-bold text-indigo-400">75/100</span>
+              </div>
+              <input type="range" id="pred-midterm" min="20" max="100" value="75">
+              <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>20 (Failing)</span>
+                <span>70 (Average)</span>
+                <span>100 (Flawless)</span>
+              </div>
+            </div>
+
+            <!-- Secondary Metrics (2-Col) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label class="text-xs font-semibold text-gray-300 uppercase">Morning Class Attn</label>
+                  <span id="val-morning" class="text-xs font-bold text-indigo-400">75%</span>
+                </div>
+                <input type="range" id="pred-morning" min="30" max="100" value="75">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label class="text-xs font-semibold text-gray-300 uppercase">Max Absence Streak</label>
+                  <span id="val-streak" class="text-xs font-bold text-indigo-400">2 days</span>
+                </div>
+                <input type="range" id="pred-streak" min="0" max="15" value="2">
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-Time AI Inference Result (5 Cols) -->
+          <div class="lg:col-span-5 flex flex-col justify-between bg-gradient-to-b from-gray-900 to-indigo-950/40 p-6 rounded-2xl border border-indigo-500/25">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Forecast Result</span>
+                <span class="badge badge-pill text-[10px]">Confidence: 94.8%</span>
+              </div>
+
+              <!-- Predicted GPA Card -->
+              <div class="text-center my-6">
+                <div id="out-predicted-gpa" class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400">
+                  3.22
+                </div>
+                <p class="text-xs text-gray-400 mt-1 font-medium">Estimated Final Cumulative GPA (0.00 - 4.00)</p>
+
+                <div class="flex justify-center items-center gap-4 mt-3">
+                  <div class="text-xs text-gray-300">
+                    <span class="text-gray-500">Est. Final Exam:</span> <strong id="out-predicted-exam" class="text-cyan-300">78/100</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Badge -->
+              <div class="flex justify-center mb-5">
+                <div id="out-risk-badge" class="badge badge-low-risk text-sm px-3 py-1">
+                  <i class="fa-solid fa-circle-check"></i> Low Academic Risk
+                </div>
+              </div>
+
+              <!-- Probability Bar -->
+              <div class="space-y-1 mb-5">
+                <div class="flex justify-between text-xs text-gray-400">
+                  <span>At-Risk Probability</span>
+                  <span id="out-risk-prob" class="font-medium text-emerald-400">12% At-Risk</span>
+                </div>
+                <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div id="out-risk-meter" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 12%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prescriptive AI Recommendation -->
+            <div class="bg-gray-900/80 p-3.5 rounded-xl border border-white/5">
+              <div class="flex items-center gap-2 text-indigo-400 text-xs font-bold mb-1">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Prescriptive Guidance:
+              </div>
+              <p id="out-advice" class="text-xs text-gray-300 leading-relaxed">
+                High probability of Dean's List / First Class academic honors. Maintain current attendance and study habits.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: PATTERNS & TRENDS -->
+    <!-- ========================================== -->
+    <section id="tab-patterns" class="hidden space-y-6">
+      <!-- Longitudinal Trends -->
+      <div class="glass-card">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">Longitudinal Attendance Curves Across 16 Weeks</h3>
+            <p class="text-xs text-gray-400">Weekly trajectory comparison across 5 identified behavioral student archetypes</p>
+          </div>
+          <span class="badge badge-pill text-xs">Temporal Series</span>
+        </div>
+        <div class="h-80 relative">
+          <canvas id="longitudinalChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Feature Importances & Behavioral Archetypes Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Feature Importance Chart -->
+        <div class="glass-card">
+          <div class="mb-4">
+            <h3 class="text-base font-bold text-white">Feature Importance on Academic GPA</h3>
+            <p class="text-xs text-gray-400">Relative predictive weight from Random Forest and Multivariate Linear Models</p>
+          </div>
+          <div class="h-72 relative">
+            <canvas id="featureChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 5 Archetypes Deep-Dive -->
+        <div class="glass-card space-y-3">
+          <div class="mb-2">
+            <h3 class="text-base font-bold text-white">Identified Behavioral Archetypes</h3>
+            <p class="text-xs text-gray-400">Clustering profiles from student attendance signatures</p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+              <div>
+                <strong class="text-emerald-400">Consistent High-Achiever (35.2%)</strong>
+                <p class="text-gray-300 mt-0.5">Maintains &ge;90% attendance across all 16 weeks. Average GPA: <strong>3.84</strong>.</p>
+              </div>
+              <span class="badge badge-low-risk">0% Risk</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between">
+              <div>
+                <strong class="text-indigo-400">Steady Improver (20.1%)</strong>
+                <p class="text-gray-300 mt-0.5">Starts lower (~70%), rallies steadily after Week 4. Average GPA: <strong>3.19</strong>.</p>
+              </div>
+              <span class="badge badge-low-risk">0% Risk</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+              <div>
+                <strong class="text-amber-400">Friday / Morning Skipper (17.9%)</strong>
+                <p class="text-gray-300 mt-0.5">Skips 8 AM and Friday sessions, creating conceptual gaps. Average GPA: <strong>2.82</strong>.</p>
+              </div>
+              <span class="badge badge-medium-risk">8.4% Risk</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-between">
+              <div>
+                <strong class="text-pink-400">Midterm Burnout (14.9%)</strong>
+                <p class="text-gray-300 mt-0.5">Starts strong (&gt;88%), collapses drastically post-midterm (Week 8). Average GPA: <strong>2.58</strong>.</p>
+              </div>
+              <span class="badge badge-medium-risk">27.5% Risk</span>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-between">
+              <div>
+                <strong class="text-rose-400">Chronic Absentee (12.0%)</strong>
+                <p class="text-gray-300 mt-0.5">Attendance &lt; 60%, consecutive absence streaks &gt; 6 days. Average GPA: <strong>1.62</strong>.</p>
+              </div>
+              <span class="badge badge-high-risk">100% Risk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: STUDENT ROSTER & INTERVENTION SIMULATOR -->
+    <!-- ========================================== -->
+    <section id="tab-roster" class="hidden space-y-6">
+      <div class="glass-card">
+        <!-- Controls Bar -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-white/10">
+          <div>
+            <h3 class="text-base font-bold text-white">Student Academic Roster & Early Warning Portal</h3>
+            <p class="text-xs text-gray-400">Filter students by risk classification or simulate the academic outcome of attendance interventions</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="Search student name, ID or department..." class="px-3 py-1.5 rounded-lg bg-gray-900 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500 w-full sm:w-64">
+            
+            <select id="riskFilter" onchange="filterStudents()" class="px-3 py-1.5 rounded-lg bg-gray-900 border border-white/10 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+              <option value="ALL">All Risk Levels</option>
+              <option value="High Risk">High Risk Only</option>
+              <option value="Medium Risk">Medium Risk</option>
+              <option value="Low Risk">Low Risk</option>
+            </select>
+
+            <select id="deptFilter" onchange="filterStudents()" class="px-3 py-1.5 rounded-lg bg-gray-900 border border-white/10 text-xs text-gray-300 focus:outline-none focus:border-indigo-500">
+              <option value="ALL">All Departments</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Electronics & Comm">Electronics & Comm</option>
+              <option value="Mechanical Eng">Mechanical Eng</option>
+              <option value="Business Analytics">Business Analytics</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto mt-4">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student Info</th>
+                <th>Attendance (Streak)</th>
+                <th>Pattern Profile</th>
+                <th>Current GPA</th>
+                <th>Risk Category</th>
+                <th>Action Simulation</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Populated dynamically by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: RESEARCH METHODOLOGY & REPORT -->
+    <!-- ========================================== -->
+    <section id="tab-methodology" class="hidden space-y-6">
+      <div class="glass-card space-y-6">
+        <div class="border-b border-white/10 pb-4">
+          <span class="badge badge-pill text-xs mb-2">Academic Research Project</span>
+          <h2 class="text-2xl font-bold text-white">Research Methodology & Mathematical Formulation</h2>
+          <p class="text-sm text-gray-400 mt-1">
+            Formal statistical inquiry: <em>"Analysis of Student Attendance Patterns for Understanding Their Relationship with Academic Performance"</em>
+          </p>
+        </div>
+
+        <!-- Problem Statement -->
+        <div class="space-y-2">
+          <h3 class="text-base font-bold text-indigo-400 flex items-center gap-2">
+            <i class="fa-solid fa-file-circle-question"></i> 1. Problem Statement & Hypotheses
+          </h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            Higher education institutions frequently experience student disengagement and course dropouts. Traditional reporting often only records a single aggregate attendance percentage at the end of the semester, failing to capture longitudinal dynamics, such as post-midterm fatigue, morning lecture absenteeism, and extended consecutive absence streaks. This research hypothesizes that <strong>temporal patterns</strong> and <strong>absence streak lengths</strong> carry greater predictive weight for academic failure than aggregate attendance alone.
+          </p>
+        </div>
+
+        <!-- Mathematical Model Formulation -->
+        <div class="space-y-2">
+          <h3 class="text-base font-bold text-indigo-400 flex items-center gap-2">
+            <i class="fa-solid fa-square-root-variable"></i> 2. Mathematical & Machine Learning Formulation
+          </h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            The GPA prediction engine uses a multivariate linear formulation with non-linear threshold penalty regularization:
+          </p>
+          <div class="code-box">
+            GPA_pred = &beta;0 + &beta;1(Attn_pct) + &beta;2(Morning_pct) + &beta;3(Study_hrs) + &beta;4(Prior_GPA) + &beta;5(Midterm) - &beta;6(Streak) - &lambda; &times; max(0, 75.0 - Attn_pct)
+          </div>
+          <p class="text-xs text-gray-400 mt-1">
+            Where &lambda; represents the non-linear penalty coefficient (0.018/point) active when attendance drops below the collegiate 75% standard threshold.
+          </p>
+        </div>
+
+        <!-- Evaluation Metrics Comparison Table -->
+        <div class="space-y-2">
+          <h3 class="text-base font-bold text-indigo-400 flex items-center gap-2">
+            <i class="fa-solid fa-table-list"></i> 3. Machine Learning Model Evaluation
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="custom-table text-xs">
+              <thead>
+                <tr>
+                  <th>Model Algorithm</th>
+                  <th>Task Type</th>
+                  <th>R² Score / Accuracy</th>
+                  <th>MAE / Precision</th>
+                  <th>RMSE / Recall</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold text-white">Multivariate Linear Regressor</td>
+                  <td>GPA Regression</td>
+                  <td class="text-emerald-400 font-semibold">0.9725</td>
+                  <td>0.0864 GPA</td>
+                  <td>0.1102 GPA</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white">Random Forest Regressor (100 Trees)</td>
+                  <td>GPA Regression</td>
+                  <td class="text-emerald-400 font-semibold">0.9680</td>
+                  <td>0.0910 GPA</td>
+                  <td>0.1154 GPA</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white">Random Forest Risk Classifier</td>
+                  <td>Risk Categorization (3 Classes)</td>
+                  <td class="text-emerald-400 font-semibold">96.5% Accuracy</td>
+                  <td>96.2% Precision</td>
+                  <td>96.8% Recall</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white">K-Means Pattern Clustering (k=5)</td>
+                  <td>Unsupervised Archetype Discovery</td>
+                  <td class="text-indigo-400 font-semibold">Silhouette: 0.68</td>
+                  <td>5 Clusters</td>
+                  <td>Converged (10 iterations)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Institutional Recommendations -->
+        <div class="space-y-2">
+          <h3 class="text-base font-bold text-indigo-400 flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb"></i> 4. Policy Recommendations for Universities
+          </h3>
+          <ul class="text-xs text-gray-300 list-disc ml-5 space-y-1.5 leading-relaxed">
+            <li><strong>Automated Streak Trigger:</strong> Deploy automated SMS/Email advisory alerts immediately whenever a student accumulates 3 consecutive missed lectures, rather than waiting for midterms.</li>
+            <li><strong>Post-Midterm Support (Week 8-10):</strong> Provide proactive counseling targeting the "Midterm Burnout" archetype who exhibit sharp attendance collapses after midterm exams.</li>
+            <li><strong>Hybrid / Asynchronous Options for Friday/Morning Gaps:</strong> Address the specific "Friday/Morning Skipper" phenomenon by scheduling flipped-classroom reviews or providing recorded catch-up lectures.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/10 py-6 mt-12 bg-gray-950 text-center text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div>
+        <span class="text-gray-300 font-semibold">Student Attendance Patterns & Academic Performance Analysis</span> &copy; 2026
+      </div>
+      <div class="flex items-center gap-4 text-gray-400">
+        <span>AI / Machine Learning Project</span>
+        <span>&bull;</span>
+        <span>Python & Scikit-Learn</span>
+        <span>&bull;</span>
+        <span>Vanilla JS & Chart.js</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
